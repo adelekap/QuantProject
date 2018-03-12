@@ -8,7 +8,7 @@ import numpy as np
 journalData = pd.read_csv('../data/Journals.csv')
 articleData = pd.read_csv('../data/Articles.csv')
 
-
+# Binary masks
 journalData.open_access = pd.Categorical(journalData.open_access)
 journalData['open_access'] = journalData.open_access.cat.codes
 
@@ -34,8 +34,31 @@ sns.jointplot('Journal_Impact_Factor', 'n_citations_2018_Google', kind="kde", si
 plt.savefig('../plots/citationsImpactJointplot.png')
 plt.show()
 
+pages = articleData[['journal_id','n_pages']].groupby('journal_id').apply(np.mean)
+pagesData = citationsData.merge(pages,on='journal_id')
+sns.jointplot('n_pages','n_citations_2018_Google',data=pagesData,kind='kde',color='purple')
+plt.savefig('../plots/citationNPages.png')
+plt.show()
+sns.jointplot('n_pages','n_authors',data=articleData,kind='kde',color='black')
+plt.savefig('../plots/authorsNPages.png')
+plt.show()
+sns.jointplot('n_authors','n_citations_2018_Google', data=articleData, kind='kde',color='brown')
+plt.savefig('../plots/authorsCitations.png')
+plt.show()
+
 # Create Distribution
 dist = sns.distplot(articleData['n_pages'])
 plt.title('Number of Pages')
 plt.savefig('../plots/nPages.pdf')
 plt.show()
+
+sns.factorplot('open_access','n_citations_2018_Google',data=citationsData,kind='bar',palette="RdBu_r")
+plt.savefig('../plots/openCitations.png')
+plt.show()
+sns.factorplot('open_access','Eigenfactor_Score',data=citationsData,kind='bar',palette="RdBu_r")
+plt.savefig('../plots/openEigen.png')
+plt.show()
+sns.factorplot('open_access','Journal_Impact_Factor',data=citationsData,kind='bar',palette="RdBu_r")
+plt.savefig('../plots/openImpact.png')
+plt.show()
+
