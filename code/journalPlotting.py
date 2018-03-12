@@ -19,9 +19,19 @@ plt.title('Number of Authors')
 plt.savefig('../plots/nAuthorsBoxplot.png')
 plt.show()
 
-# Create Joint Plot
+# Create Joint Plot for factor scores
 joint = sns.jointplot('Eigenfactor_Score', 'Journal_Impact_Factor', kind="kde", size=7, space=0, data=journalData)
 plt.savefig('../plots/EigenImpactJointplot.png')
+plt.show()
+
+# Create Joint Plot for citations
+citations = articleData[['journal_id','n_citations_2018_Google']].groupby('journal_id').apply(np.mean)
+citationsData = journalData.merge(citations,on='journal_id')
+sns.jointplot('Eigenfactor_Score', 'n_citations_2018_Google', kind="kde", size=7, space=0, data=citationsData,color='red')
+plt.savefig('../plots/citationsEigenJointplot.png')
+plt.show()
+sns.jointplot('Journal_Impact_Factor', 'n_citations_2018_Google', kind="kde", size=7, space=0, data=citationsData,color='green')
+plt.savefig('../plots/citationsImpactJointplot.png')
 plt.show()
 
 # Create Distribution
